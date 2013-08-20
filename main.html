@@ -1,0 +1,125 @@
+<!-- Written by Mike Frysinger <vapier@gmail.com>.  Released into the public domain.  Suck it. -->
+<!doctype html>
+<html>
+
+<head>
+<title>Media Player Client</title>
+<script src='js/tcp-client.js'></script>
+<script src='js/mpc.js'></script>
+<script src='main.js'></script>
+<style>
+table {
+	margin: 0px;
+	padding: 0px;
+	border-collapse: collapse;
+}
+body {
+	margin: 0px;
+	padding: 0px;
+}
+td {
+	white-space: nowrap;
+}
+div#status {
+	white-space: nowrap;
+}
+
+table.tabs td {
+	padding-left: 1em;
+	border: black solid 1px;
+	border-top: 0px;
+	font-size: smaller;
+	font-family: sans-serif;
+	background-color: #d0d0d0;
+}
+table.tabs td.selected {
+	background-color: white;
+}
+
+/* Get the tabs to float at the bottom */
+html, body {
+	height: 100%;
+}
+div#body {
+	min-height: 100%;
+}
+div.main {
+	overflow: auto;
+	padding-bottom: 1.3em;
+}
+div#footer {
+	position: relative;
+	margin-top: -1.3em;
+	height: 1.3em;
+	clear: both;
+}
+</style>
+</head>
+
+<body>
+
+<div id='body'>
+
+<div class='main' id='main.controls'>
+<table>
+ <tr>
+  <td>
+   <input type='button' id='previous' value='&#x21E6;'><input type='button' id='stop' value='&#x25FB;'><input type='button' id='pause' value='&#x25EB;'><input type='button' id='play' value='&#x25B7;'><input type='button' id='next' value='&#x21E8;'>
+  </td>
+  <td style='whitespace:collapse'>
+   <input type='button' id='repeat' value='&#x221E;'><input type='button' id='random' value='&reg;'><input type='button' id='single' value='&sect;'><input type='button' id='consume' value='&copy;'>
+  </td>
+ </tr>
+ <tr>
+  <td>
+   <input type='range' id='setvol' min='0' max='100' value='0'>
+  </td>
+  <td>
+   <input type='range' id='seekcur' min='0' max='100' value='0'>
+  </td>
+ </tr>
+ <tr>
+  <td colspan=2>
+   <span id='status'>Loading...</span>
+  </td>
+ </tr>
+</table>
+</div>
+
+<div class='main' id='main.options' style='display: none'>
+<table>
+ <tr>
+  <td>Host:</td>
+  <td><input type='text' id='host' value='192.168.0.2'></td>
+ </tr>
+ <tr>
+  <td>Port:</td>
+  <td><input type='number' id='port' value='6600'></td>
+ </tr>
+ <tr>
+  <td colspan=2>
+   <input type='button' id='connect' value='connect'>
+   &nbsp;&nbsp;&nbsp;
+   Sync Settings:<input type='checkbox' id='sync' checked></td>
+ </tr>
+</table>
+</div>
+
+<div class='main' id='main.metadata' style='display: none'>
+<div id='metadata'></div>
+</div>
+
+</div>
+
+<div id='footer'>
+<table class='tabs'>
+ <tr>
+  <td id='tab.controls' class='selected'>Controls</td>
+  <td id='tab.metadata'>Metadata</td>
+  <td id='tab.options'>Options</td>
+ </tr>
+</table>
+</div>
+
+</body>
+</html>
