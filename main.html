@@ -90,17 +90,23 @@ div#footer {
 <table>
  <tr>
   <td>Host:</td>
-  <td><input type='text' id='host' value='192.168.0.2'></td>
+  <td><input type='text' id='host'></td>
  </tr>
  <tr>
   <td>Port:</td>
-  <td><input type='number' id='port' value='6600'></td>
+  <td colspan=2>
+   <input type='number' id='port' style='width:60px'>
+   &nbsp;&nbsp;&nbsp;
+   <input type='button' id='connect' value='connect'>
+  </td>
  </tr>
  <tr>
-  <td colspan=2>
-   <input type='button' id='connect' value='connect'>
+  <td>Refresh (sec):</td>
+  <td>
+   <input type='number' id='refresh' style='width:40px'>
    &nbsp;&nbsp;&nbsp;
-   Sync Settings:<input type='checkbox' id='sync' checked></td>
+   Sync Settings:<input type='checkbox' id='sync' checked>
+  </td>
  </tr>
 </table>
 </div>

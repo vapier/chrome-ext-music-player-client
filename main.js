@@ -3,6 +3,7 @@
 /* Globals to allow easy manipulation via javascript console */
 var mpc;
 var tcpclient;
+var refresh_id = NaN;
 
 function TcpClientSender(tcpclient) {
 	this.tcpclient = tcpclient;
@@ -24,12 +25,13 @@ window.onload = function() {
 		'sync',
 	];
 	var sync_keys = [
-		'host', 'port',
+		'host', 'port', 'refresh',
 	];
 	var options = {
 		'host': '192.168.0.2',
 		'port': 6600,
 		'sync': true,
+		'refresh': 5,
 	};
 
 	chrome.storage.local.get(local_keys, function(settings) {
@@ -78,6 +80,7 @@ function mpc_connect(host, port) {
 		mpc = new Mpc(mpc_sender, update_ui);
 		console.log('connected to ' + host + ':' + port);
 		mpc_refresh();
+		update_refresh_timer();
 	});
 }
 
@@ -142,6 +145,19 @@ function show_page(page) {
 	}
 }
 
+function do_refresh() {
+	mpc_refresh();
+	refresh_id = window.setTimeout(do_refresh, window['opts_refresh'].value * 1000);
+}
+
+function update_refresh_timer() {
+	if (refresh_id != NaN)
+		window.clearTimeout(refresh_id);
+	var rate = window['opts_refresh'].value * 1000;
+	if (rate > 0)
+		refresh_id = window.setTimeout(do_refresh, rate);
+}
+
 function update_local_settings() {
 	var setting = {};
 	setting[this.id] = this.checked;
@@ -153,6 +169,12 @@ function update_sync_settings() {
 	setting[this.id] = this.value;
 	var storage = sync_storage(window['opts_sync'].checked);
 	storage.set(setting);
+
+	switch (this.id) {
+	case 'refresh':
+		update_refresh_timer();
+		break;
+	}
 }
 
 function init_ui(local_keys, sync_keys, options) {
