@@ -1,26 +1,33 @@
 // Written by Mike Frysinger <vapier@gmail.com>.  Released into the public domain.  Suck it.
 
-function Mpc(socket, cb_update_state) {
+function Mpc(socket, cb_update_state, debug_enabled) {
 	this._socket = socket;
 	this._cb_update_state = cb_update_state;
+	this._debug_enabled = debug_enabled;
 	this._queue = ['init'];
 	this.state = {};
 }
 
-Mpc.log = function(msg, obj) {
-	console.log('mpc: ' + msg, obj);
+Mpc.prototype.log = function(msg, obj) {
+	if (this._debug_enabled)
+		console.log('mpc: ' + msg, obj);
+}
+
+Mpc.prototype.set_debug = function(val) {
+	this._debug_enabled = val;
 }
 
 Mpc.prototype.send = function(msg) {
+	var _this = this;
 	this._queue.push(msg);
 	this._socket.send(msg, function(x) {
-		Mpc.log('send: ' + msg + ':', x);
+		_this.log('send: ' + msg + ':', x);
 	});
 }
 
 Mpc.prototype.recv_msg = function(lines) {
 	curr = this._queue.shift();
-	Mpc.log('recv: [' + curr + ']:', lines.join('\n'));
+	this.log('recv: [' + curr + ']:', lines.join('\n'));
 	curr = curr.split(' ');
 
 	switch (curr[0]) {
@@ -72,7 +79,7 @@ Mpc.__make_send_void = function(cmd) {
 Mpc.__make_send_arg1 = function(cmd) {
 	return function(a1) {
 		if (a1 === undefined)
-			Mpc.log(cmd + ': function requires one argument');
+			this.log(cmd + ': function requires one argument');
 		else
 			this.send(cmd + ' ' + a1);
 	}
@@ -81,7 +88,7 @@ Mpc.__make_send_arg1 = function(cmd) {
 Mpc.__make_send_arg2 = function(cmd) {
 	return function(a1, a2) {
 		if (a1 === undefined || a2 === undefined)
-			Mpc.log(cmd + ': function requires two arguments');
+			this.log(cmd + ': function requires two arguments');
 		else
 			this.send(cmd + ' ' + a1 + ' ' + a2);
 	}
@@ -102,7 +109,7 @@ Mpc.__make_send_range = function(cmd, min, max, def) {
 		if (arg >= min && arg <= max)
 			this.send(cmd + ' ' + arg);
 		else
-			Mpc.log(cmd + ': arg must be [' + min + ',' + max + '] but got "' + arg + '"');
+			this.log(cmd + ': arg must be [' + min + ',' + max + '] but got "' + arg + '"');
 	};
 }
 
