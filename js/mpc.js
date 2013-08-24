@@ -130,7 +130,7 @@ Mpc.prototype.stats               = Mpc.__make_send_void('stats');
 // consume {STATE}
 Mpc.prototype.consume             = Mpc.__make_send_range('consume', 0, 1, 1);
 // crossfade {SECONDS}
-Mpc.prototype.consume             = Mpc.__make_send_arg1('crossfade');
+Mpc.prototype.crossfade           = Mpc.__make_send_arg1('crossfade');
 // mixrampdb {deciBels}
 Mpc.prototype.mixrampdb           = Mpc.__make_send_arg1('mixrampdb');
 // mixrampdelay {SECONDS|nan}
