@@ -239,7 +239,12 @@ function update_ui(state, cmd) {
 		return;
 	}
 
-	var time = state.time.split(':');
+	var time;
+	if ('time' in state)
+		// When stopped, there is no time field at all.
+		time = state.time.split(':');
+	else
+		time = [0, 0];
 	window['ui_mpc_seekcur'].max = time[1];
 	window['ui_mpc_seekcur'].value = time[0];
 
