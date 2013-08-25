@@ -192,3 +192,49 @@ Mpc.prototype.kill                = Mpc.__make_send_void('kill');
 Mpc.prototype.password            = Mpc.__make_send_arg1('password');
 // ping
 Mpc.prototype.ping                = Mpc.__make_send_void('ping');
+
+/*
+ * Audio output devices
+ * http://www.musicpd.org/doc/protocol/ch03s09.html
+ */
+
+// disableoutput {ID}
+Mpc.prototype.disableoutput       = Mpc.__make_send_arg1('disableoutput');
+// enableoutput {ID}
+Mpc.prototype.enableoutput        = Mpc.__make_send_arg1('enableoutput');
+// outputs
+Mpc.prototype.outputs             = Mpc.__make_send_void('outputs');
+
+/*
+ * Reflection
+ * http://www.musicpd.org/doc/protocol/ch03s10.html
+ */
+
+// config
+Mpc.prototype.config              = Mpc.__make_send_void('config');
+// commands
+Mpc.prototype.commands            = Mpc.__make_send_void('commands');
+// notcommands
+Mpc.prototype.notcommands         = Mpc.__make_send_void('notcommands');
+// tagtypes
+Mpc.prototype.tagtypes            = Mpc.__make_send_void('tagtypes');
+// urlhandlers
+Mpc.prototype.urlhandlers         = Mpc.__make_send_void('urlhandlers');
+// decoders
+Mpc.prototype.decoders            = Mpc.__make_send_void('decoders');
+
+/*
+ * Client to client
+ * http://www.musicpd.org/doc/protocol/ch03s11.html
+ */
+
+// subscribe {NAME}
+Mpc.prototype.subscribe           = Mpc.__make_send_arg1('subscribe');
+// unsubscribe {NAME}
+Mpc.prototype.unsubscribe         = Mpc.__make_send_arg1('unsubscribe');
+// channels
+Mpc.prototype.channels            = Mpc.__make_send_void('channels');
+// readmessages
+Mpc.prototype.readmessages        = Mpc.__make_send_void('readmessages');
+// sendmessage {CHANNEL} {TEXT}
+Mpc.prototype.sendmessage         = Mpc.__make_send_arg2('sendmessage');
