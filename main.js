@@ -151,7 +151,7 @@ function do_refresh() {
 }
 
 function update_refresh_timer() {
-	if (refresh_id != NaN)
+	if (!isNaN(refresh_id))
 		window.clearTimeout(refresh_id);
 	var rate = window['opts_refresh'].value * 1000;
 	if (rate > 0)
