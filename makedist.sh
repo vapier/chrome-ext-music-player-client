@@ -30,7 +30,13 @@ while read line ; do
   [[ ${line} == */* ]] && mkdir -p "${P}/${line%/*}"
   ln "${line}" "${P}/${line}"
 done < <(sed 's:#.*::' manifest.files)
-cp manifest.json "${P}/"
+cp Makefile manifest.files manifest.json "${P}/"
+
+make -C "${P}" -j js-min
+while read line ; do
+	mv "${line}.min" "${line}"
+done < <(find "${P}" -name '*.js')
+rm "${P}"/{manifest.files,Makefile}
 
 sed -i \
   -e '/"version"/s:"[^"]*",:"'${PVR}'",:' \
