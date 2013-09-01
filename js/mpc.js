@@ -244,7 +244,7 @@ Mpc.prototype.seek                = Mpc.__make_send_arg2('seek');
 // seekid {SONGID} {TIME}
 Mpc.prototype.seekid              = Mpc.__make_send_arg2('seekid');
 // seekcur {TIME}
-Mpc.prototype.seekcur             = Mpc.__make_send_arg1('seek');
+Mpc.prototype.seekcur             = Mpc.__make_send_arg1('seekcur');
 // stop
 Mpc.prototype.stop                = Mpc.__make_send_void('stop');
 
