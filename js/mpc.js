@@ -34,6 +34,8 @@ Mpc.prototype.send = function(msg) {
 Mpc.prototype.recv_msg = function(lines) {
 	curr = this._queue.shift();
 	this.log(0x2, 'recv: [' + curr + ']:', lines.join('\n'));
+	if (lines[0].substr(0, 4) == 'ACK ')
+		this.err(curr, lines.join('\n'));
 	curr = curr.split(' ');
 
 	switch (curr[0]) {
@@ -79,7 +81,8 @@ Mpc.prototype.recv = function(msg) {
 	var lines = this._recv_buffer = this._recv_buffer.concat(msg.split('\n'));
 	var i = 0;
 	while (i < lines.length) {
-		if (lines[i] == 'OK' || lines[i].substr(0, 3) == 'OK ') {
+		if (lines[i] == 'OK' || lines[i].substr(0, 3) == 'OK ' ||
+		    lines[i].substr(0, 4) == 'ACK ') {
 			this.recv_msg(lines.splice(0, i + 1));
 			i = 0;
 		} else
