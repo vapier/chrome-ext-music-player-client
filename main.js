@@ -79,6 +79,8 @@ function mpc_connect(host, port) {
 		tcpclient.addResponseListener(tramp_mpc_recv);
 		mpc = new Mpc(mpc_sender, update_ui);
 		console.log('connected to ' + host + ':' + port);
+		console.log('protip: use the "mpc" object to poke mpd directly.\n' +
+		            'you can also do mpc.set_debug(3) to see traffic');
 		mpc_refresh();
 		update_refresh_timer();
 	});
