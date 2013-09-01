@@ -237,7 +237,7 @@ function update_ui(state, cmd) {
 
 	if ('file' in state) {
 		// Hack: should be a real object.
-		ui_mpc_metadata.innerText = state['file'];
+		ui_mpc_metadata.innerText = state.file;
 	}
 
 	var time;
@@ -246,10 +246,14 @@ function update_ui(state, cmd) {
 		time = state.time.split(':');
 	else
 		time = [0, 0];
-	window['ui_mpc_seekcur'].max = time[1];
-	window['ui_mpc_seekcur'].value = time[0];
+	window.ui_mpc_seekcur.max = time[1];
+	window.ui_mpc_seekcur.value = time[0];
+	percent = Math.floor((0.0 + time[0]) * 100 / (0.0 + time[1]));
+	window.ui_mpc_seekcur.title = 'seekcur (' + percent + '%)';
 
-	window['ui_mpc_setvol'].value = state.volume;
+	window.ui_mpc_setvol.value = state.volume;
+	window.ui_mpc_setvol.title = 'setvol (' + state.volume + '%)';
+
 	[
 		'consume', 'random', 'repeat', 'single',
 	].forEach(function(id) {
