@@ -274,8 +274,13 @@ function pretty_time(time) {
 }
 
 function playlist_del() {
-	mpc.deleteid(this.title);
+	mpc.deleteid(this.song_id);
 	this.parentNode.remove();
+}
+
+function playlist_play() {
+	mpc.playid(this.song_id);
+	this.parentNode.style.fontWeight = 'bold';
 }
 
 function update_ui(state, cmd) {
@@ -323,12 +328,16 @@ function update_ui(state, cmd) {
 		cell = row.insertCell(-1);
 		cell.id = 'playlist_del';
 		cell.innerHTML = '&#164;';
-		cell.title = song.Id;
+		cell.song_id = song.Id;
+		cell.title = 'delete';
 		cell.onclick = playlist_del;
 
 		cell = row.insertCell(-1);
 		cell.innerText = song.Pos;
 		cell.style.textAlign = 'right';
+		cell.song_id = song.Id;
+		cell.title = 'play';
+		cell.onclick = playlist_play;
 
 		if ('Artist' in song) {
 			row.insertCell(-1).innerText = song.Artist;
