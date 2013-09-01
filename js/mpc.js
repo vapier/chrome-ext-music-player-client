@@ -112,6 +112,15 @@ Mpc.__make_send_arg2 = function(cmd) {
 	}
 }
 
+Mpc.__make_send_arg3 = function(cmd) {
+	return function(a1, a2, a3) {
+		if (a1 === undefined || a2 === undefined || a3 == undefined)
+			this.err(cmd + ': function requires three arguments');
+		else
+			this.send(cmd + ' ' + a1 + ' ' + a2 + ' ' + a3);
+	}
+}
+
 Mpc.__make_send_opt = function(cmd) {
 	return function(arg) {
 		if (arg === undefined)
@@ -196,6 +205,85 @@ Mpc.prototype.seekid              = Mpc.__make_send_arg2('seekid');
 Mpc.prototype.seekcur             = Mpc.__make_send_arg1('seek');
 // stop
 Mpc.prototype.stop                = Mpc.__make_send_void('stop');
+
+/*
+ * The current playlist
+ * http://www.musicpd.org/doc/protocol/ch03s04.html
+ */
+
+// add {URI}
+Mpc.prototype.add                 = Mpc.__make_send_arg1('add');
+// addid {URI} [POSITION]
+// TODO: handle position
+Mpc.prototype.addid               = Mpc.__make_send_arg1('addid');
+// clear
+Mpc.prototype.clear               = Mpc.__make_send_void('clear');
+// delete [{POS} | {START:END}]
+Mpc.prototype.delete              = Mpc.__make_send_arg1('delete');
+// deleteid {SONGID}
+Mpc.prototype.deleteid            = Mpc.__make_send_arg1('deleteid');
+// move [{FROM} | {START:END}] {TO}
+Mpc.prototype.move                = Mpc.__make_send_arg2('move');
+// moveid {FROM} {TO}
+Mpc.prototype.moveid              = Mpc.__make_send_arg2('moveid');
+// playlist
+Mpc.prototype.playlist            = Mpc.__make_send_void('playlist');
+// playlistfind {TAG} {NEEDLE}
+Mpc.prototype.playlistfind        = Mpc.__make_send_arg2('playlistfind');
+// playlistid {SONGID}
+Mpc.prototype.playlistid          = Mpc.__make_send_arg1('playlistid');
+// playlistinfo [[SONGPOS] | [START:END]]
+Mpc.prototype.playlistinfo        = Mpc.__make_send_opt('playlistinfo');
+// playlistsearch {TAG} {NEEDLE}
+Mpc.prototype.playlistsearch      = Mpc.__make_send_arg2('playlistsearch');
+// plchanges {VERSION}
+Mpc.prototype.plchanges           = Mpc.__make_send_arg1('plchanges');
+// plchangesposid {VERSION}
+Mpc.prototype.plchangesposid      = Mpc.__make_send_arg1('plchangesposid');
+// prio {PRIORITY} {START:END...}
+Mpc.prototype.prio                = Mpc.__make_send_arg2('prio');
+// prioid {PRIORITY} {ID...}
+Mpc.prototype.prioid              = Mpc.__make_send_arg2('prioid');
+// shuffle [START:END]
+Mpc.prototype.shuffle             = Mpc.__make_send_opt('shuffle');
+// swap {SONG1} {SONG2}
+Mpc.prototype.swap                = Mpc.__make_send_arg2('swap');
+// swapid {SONG1} {SONG2}
+Mpc.prototype.swapid              = Mpc.__make_send_arg2('swapid');
+
+/*
+ * Stored playlists
+ * http://www.musicpd.org/doc/protocol/ch03s05.html
+ */
+
+// listplaylist {NAME}
+Mpc.prototype.listplaylist        = Mpc.__make_send_arg1('listplaylist');
+// listplaylistinfo {NAME}
+Mpc.prototype.listplaylistinfo    = Mpc.__make_send_arg1('listplaylistinfo');
+// listplaylists
+Mpc.prototype.listplaylists       = Mpc.__make_send_void('listplaylists');
+// load {NAME} [START:END]
+// TODO: handle optional start:end
+Mpc.prototype.load                = Mpc.__make_send_arg1('load');
+// playlistadd {NAME} {URI}
+Mpc.prototype.playlistadd         = Mpc.__make_send_arg2('playlistadd');
+// playlistclear {NAME}
+Mpc.prototype.playlistclear       = Mpc.__make_send_arg1('playlistclear');
+// playlistdelete {NAME} {SONGPOS}
+Mpc.prototype.playlistdelete      = Mpc.__make_send_arg2('playlistdelete');
+// playlistmove {NAME} {SONGID} {SONGPOS}
+Mpc.prototype.playlistmove        = Mpc.__make_send_arg3('playlistmove');
+// rename {NAME} {NEW_NAME}
+Mpc.prototype.rename              = Mpc.__make_send_arg2('rename');
+// rm {NAME}
+Mpc.prototype.rm                  = Mpc.__make_send_arg1('rm');
+// save {NAME}
+Mpc.prototype.save                = Mpc.__make_send_arg1('save');
+
+/*
+ * The music database
+ * http://www.musicpd.org/doc/protocol/ch03s06.html
+ */
 
 /*
  * Connection settings
