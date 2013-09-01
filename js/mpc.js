@@ -5,6 +5,8 @@ function Mpc(socket, cb_update_state, debug_enabled) {
 	this._cb_update_state = cb_update_state;
 	this._debug_enabled = debug_enabled;
 	this._queue = ['init'];
+	this._recv_buffer = [];
+	this._recv_buffer_last = 0;
 	this.state = {};
 }
 
@@ -74,8 +76,7 @@ Mpc.prototype.recv_msg = function(lines) {
 
 Mpc.prototype.recv = function(msg) {
 	/* We can get back a bunch of responses in a row, so parse them out */
-	/* XXX: Do we have to handle partial reads ?  like long playlists ... */
-	lines = msg.split('\n');
+	var lines = this._recv_buffer = this._recv_buffer.concat(msg.split('\n'));
 	var i = 0;
 	while (i < lines.length) {
 		if (lines[i] == 'OK' || lines[i].substr(0, 3) == 'OK ') {
@@ -84,6 +85,13 @@ Mpc.prototype.recv = function(msg) {
 		} else
 			++i;
 	}
+
+	if (lines.length && this._recv_buffer_last != lines.length) {
+		// Keep sucking in data so long as more exists.
+		this._recv_buffer_last = lines.length;
+		this._socket.poll();
+	} else
+		this._recv_buffer_last = lines.length;
 }
 
 /*
