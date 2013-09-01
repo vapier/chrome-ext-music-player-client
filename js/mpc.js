@@ -41,16 +41,30 @@ Mpc.prototype.recv_msg = function(lines) {
 	case 'stats':
 	case 'status':
 		state = {};
+		keys = [];
 		lines.forEach(function(line) {
 			i = line.indexOf(':');
 			if (i == -1)
 				return;	// Ignores the OK line
 			key = line.substr(0, i);
+			keys.push(key);
 			val = line.substr(i + 2);
 			state[key] = val;
 		});
-		this.state = state;
-		this._cb_update_state(state);
+
+		// When mpd is stopped, it gives us back crap values for some things.
+		if ('state' in state && state.state == 'stop') {
+			if ('volume' in state && state.volume == '-1')
+				keys.splice(keys.indexOf('volume'), 1);
+		}
+		// Now merge the current state with the previous one so that we don't
+		// lose information like volume or song position.
+		curr_state = this.state;
+		keys.forEach(function(key) {
+			curr_state[key] = state[key];
+		});
+
+		this._cb_update_state(curr_state);
 		break;
 	default:
 		this._cb_update_state(lines, curr);
