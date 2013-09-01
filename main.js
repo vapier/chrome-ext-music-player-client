@@ -56,6 +56,23 @@ window.onload = function() {
 	});
 };
 
+window.onkeypress = function(e) {
+	switch (e.keyCode) {
+	case 49: // 1
+		show_page('controls');
+		break;
+	case 50: // 1
+		show_page('metadata');
+		break;
+	case 51: // 1
+		show_page('playlist');
+		break;
+	case 52: // 1
+		show_page('options');
+		break;
+	}
+};
+
 function mpc_refresh() {
 	mpc.status();
 }
@@ -191,11 +208,17 @@ function update_sync_settings() {
 }
 
 function init_ui(local_keys, sync_keys, options) {
+	var ele, i;
+
 	/* Setup footer */
+	i = 1;
 	[
-		'controls', 'metadata', 'options', 'playlist',
+		'controls', 'metadata', 'playlist', 'options',
 	].forEach(function(id) {
-		document.getElementById('tab.' + id).onclick = show_page;
+		var ele = document.getElementById('tab.' + id);
+		ele.onclick = show_page;
+		ele.title = id + ' [' + i + ']';
+		++i;
 	});
 
 	/* Setup control tab */
@@ -207,6 +230,8 @@ function init_ui(local_keys, sync_keys, options) {
 		var ele = window['ui_mpc_' + id] = document.getElementById(id);
 		ele.onchange = ele.onclick = window['tramp_mpc_' + id];
 		ele.title = id;
+		if (ele.accessKey)
+			ele.title += ' [' + ele.accessKey + ']'
 	});
 	window['ui_mpc_currtime'] = document.getElementById('currtime');
 
