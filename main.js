@@ -192,7 +192,6 @@ function init_ui(local_keys, sync_keys, options) {
 
 	/* Setup control tab */
 	ui_mpc_status = document.getElementById('status');
-	ui_mpc_metadata = document.getElementById('metadata');
 	[
 		'consume', 'next', 'pause', 'play', 'previous', 'random', 'repeat',
 		'seekcur', 'setvol', 'single', 'stop',
@@ -200,6 +199,13 @@ function init_ui(local_keys, sync_keys, options) {
 		var ele = window['ui_mpc_' + id] = document.getElementById(id);
 		ele.onchange = ele.onclick = window['tramp_mpc_' + id];
 		ele.title = id;
+	});
+
+	/* Setup metadata tab */
+	[
+		'album', 'artist', 'date', 'file', 'title',
+	].forEach(function(id) {
+		window['ui_mpc_metadata_' + id] = document.getElementById('metadata.' + id);
 	});
 
 	/* Setup options tab */
@@ -238,10 +244,12 @@ function update_ui(state, cmd) {
 		return;
 	}
 
-	if ('file' in state) {
-		// Hack: should be a real object.
-		ui_mpc_metadata.innerText = state.file;
-	}
+	// Hack: should be a real object.
+	ui_mpc_metadata_album.innerText = state.Album;
+	ui_mpc_metadata_artist.innerText = state.Artist;
+	ui_mpc_metadata_title.innerText = state.Title;
+	ui_mpc_metadata_date.innerText = state.Date;
+	ui_mpc_metadata_file.innerText = state.file;
 
 	var time;
 	if ('time' in state)
