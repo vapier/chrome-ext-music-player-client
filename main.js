@@ -238,7 +238,6 @@ function update_ui(state, cmd) {
 	if ('file' in state) {
 		// Hack: should be a real object.
 		ui_mpc_metadata.innerText = state['file'];
-		return;
 	}
 
 	var time;
