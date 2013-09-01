@@ -110,6 +110,7 @@ function tramp_mpc_consume() {
 	mpc.consume(val);
 	setToggleButton(this, val);
 }
+function tramp_mpc_deleteid() { mpc.deleteid(this.title); }
 function tramp_mpc_next() { mpc.next(); }
 function tramp_mpc_pause() { mpc.pause(); }
 function tramp_mpc_play() { mpc.play(); }
@@ -272,6 +273,11 @@ function pretty_time(time) {
 	return ret + ("00" + sec).substr(-2);
 }
 
+function playlist_del() {
+	mpc.deleteid(this.title);
+	this.parentNode.remove();
+}
+
 function update_ui(state, cmd) {
 	if (typeof(state) == 'string') {
 		ui_mpc_status.innerText = ({
@@ -313,6 +319,12 @@ function update_ui(state, cmd) {
 		var cell, row = ui_mpc_playlist.insertRow(-1);
 		if (song.Pos == currentsong.Pos)
 			row.style.fontWeight = 'bold';
+
+		cell = row.insertCell(-1);
+		cell.id = 'playlist_del';
+		cell.innerHTML = '&#164;';
+		cell.title = song.Id;
+		cell.onclick = playlist_del;
 
 		cell = row.insertCell(-1);
 		cell.innerText = song.Pos;
