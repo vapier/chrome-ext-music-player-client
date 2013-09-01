@@ -58,7 +58,6 @@ window.onload = function() {
 
 function mpc_refresh() {
 	mpc.status();
-	mpc.currentsong();
 }
 
 function mpc_connect(host, port) {
@@ -136,6 +135,15 @@ function show_page(page) {
 	if (typeof(page) != 'string')
 		page = this.id.split('.')[1];
 
+	switch (page) {
+	case 'playlist':
+		mpc.playlistinfo();
+		// Fallthrough.
+	case 'metadata':
+		mpc.currentsong();
+		break;
+	}
+
 	var eles = document.getElementsByClassName('main');
 	for (var i = 0; i < eles.length; ++i) {
 		var ele = eles[i];
@@ -185,7 +193,7 @@ function update_sync_settings() {
 function init_ui(local_keys, sync_keys, options) {
 	/* Setup footer */
 	[
-		'controls', 'metadata', 'options',
+		'controls', 'metadata', 'options', 'playlist',
 	].forEach(function(id) {
 		document.getElementById('tab.' + id).onclick = show_page;
 	});
@@ -200,6 +208,7 @@ function init_ui(local_keys, sync_keys, options) {
 		ele.onchange = ele.onclick = window['tramp_mpc_' + id];
 		ele.title = id;
 	});
+	window['ui_mpc_currtime'] = document.getElementById('currtime');
 
 	/* Setup metadata tab */
 	[
@@ -207,6 +216,9 @@ function init_ui(local_keys, sync_keys, options) {
 	].forEach(function(id) {
 		window['ui_mpc_metadata_' + id] = document.getElementById('metadata.' + id);
 	});
+
+	/* Setup playlist tab */
+	window['ui_mpc_playlist'] = document.getElementById('playlist');
 
 	/* Setup options tab */
 	document.getElementById('connect').onclick = mpc_connect;
@@ -220,6 +232,19 @@ function init_ui(local_keys, sync_keys, options) {
 		ele.value = options[id];
 		ele.oninput = update_sync_settings;
 	});
+}
+
+function pretty_time(time) {
+	var sec, min, hrs, ret = '';
+	time = parseInt(time);
+	sec = time % 60;
+	min = parseInt((time / 60) % 60);
+	hrs = parseInt((time / 3600) % 3600);
+	if (hrs)
+		ret = hrs + ':' + ("00" + min).substr(-2) + ':';
+	else
+		ret = min + ':';
+	return ret + ("00" + sec).substr(-2);
 }
 
 function update_ui(state, cmd) {
@@ -244,26 +269,57 @@ function update_ui(state, cmd) {
 		return;
 	}
 
-	// Hack: should be a real object.
-	ui_mpc_metadata_album.innerText = state.Album;
-	ui_mpc_metadata_artist.innerText = state.Artist;
-	ui_mpc_metadata_title.innerText = state.Title;
-	ui_mpc_metadata_date.innerText = state.Date;
-	ui_mpc_metadata_file.innerText = state.file;
+	/* Update the metadata tab. */
+	var currentsong = {};
+	if ('Currentsong' in state)
+		currentsong = state.Currentsong;
+	ui_mpc_metadata_album.innerText = currentsong.Album;
+	ui_mpc_metadata_artist.innerText = currentsong.Artist;
+	ui_mpc_metadata_title.innerText = currentsong.Title;
+	ui_mpc_metadata_date.innerText = currentsong.Date;
+	ui_mpc_metadata_file.innerText = currentsong.file;
 
+	/* Update the playlist tab. */
+	var playlist = [];
+	if ('Playlist' in state)
+		playlist = state.Playlist;
+	ui_mpc_playlist.innerHTML = '';
+	playlist.forEach(function(song) {
+		var cell, row = ui_mpc_playlist.insertRow(-1);
+		if (song.Pos == currentsong.Pos)
+			row.style.fontWeight = 'bold';
+
+		cell = row.insertCell(-1);
+		cell.innerText = song.Pos;
+		cell.style.textAlign = 'right';
+
+		if ('Artist' in song) {
+			row.insertCell(-1).innerText = song.Artist;
+			row.insertCell(-1).innerText = song.Album;
+			row.insertCell(-1).innerText = song.Title;
+		} else {
+			cell = row.insertCell(-1);
+			cell.innerText = song.file;
+			cell.colSpan = 3;
+		}
+		row.insertCell(-1).innerText = pretty_time(song.Time);
+	});
+
+	/* Update the status tab. */
 	var time;
 	if ('time' in state)
 		// When stopped, there is no time field at all.
 		time = state.time.split(':');
 	else
 		time = [0, 0];
-	window.ui_mpc_seekcur.max = time[1];
-	window.ui_mpc_seekcur.value = time[0];
+	ui_mpc_seekcur.max = time[1];
+	ui_mpc_seekcur.value = time[0];
 	percent = Math.floor((0.0 + time[0]) * 100 / (0.0 + time[1]));
-	window.ui_mpc_seekcur.title = 'seekcur (' + percent + '%)';
+	ui_mpc_seekcur.title = 'seekcur (' + percent + '%)';
+	ui_mpc_currtime.innerText = [pretty_time(time[0]), pretty_time(time[1]), percent + '%'].join(' / ');
 
-	window.ui_mpc_setvol.value = state.volume;
-	window.ui_mpc_setvol.title = 'setvol (' + state.volume + '%)';
+	ui_mpc_setvol.value = state.volume;
+	ui_mpc_setvol.title = 'setvol (' + state.volume + '%)';
 
 	[
 		'consume', 'random', 'repeat', 'single',

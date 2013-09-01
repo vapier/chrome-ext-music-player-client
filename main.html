@@ -36,6 +36,11 @@ table.tabs td.selected {
 	background-color: white;
 }
 
+table#playlist td {
+	border-left: black solid 1px;
+	padding-right: 0.5em;
+}
+
 /* Get the tabs to float at the bottom */
 html, body {
 	height: 100%;
@@ -79,9 +84,10 @@ div#footer {
   </td>
  </tr>
  <tr>
-  <td colspan=2>
-   <span id='status'>Loading...</span>
+  <td id='status'>
+   Loading...
   </td>
+  <td id='currtime'></td>
  </tr>
 </table>
 </div>
@@ -119,6 +125,10 @@ div#footer {
 <span id='metadata.file'></span>
 </div>
 
+<div class='main' id='main.playlist' style='display: none'>
+<table id='playlist'></table>
+</div>
+
 </div>
 
 <div id='footer'>
@@ -126,6 +136,7 @@ div#footer {
  <tr>
   <td id='tab.controls' class='selected'>Controls</td>
   <td id='tab.metadata'>Metadata</td>
+  <td id='tab.playlist'>Playlist</td>
   <td id='tab.options'>Options</td>
  </tr>
 </table>

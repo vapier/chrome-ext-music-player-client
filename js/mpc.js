@@ -31,30 +31,60 @@ Mpc.prototype.send = function(msg) {
 	});
 }
 
+Mpc.prototype._parse_result = function(lines) {
+	var state = {};
+	var keys = [];
+	var key, val, i;
+
+	lines.forEach(function(line) {
+		i = line.indexOf(':');
+		if (i == -1)
+			return;	// Ignores the OK line
+		key = line.substr(0, i);
+		keys.push(key);
+		val = line.substr(i + 2);
+		state[key] = val;
+	});
+
+	return {
+		'state': state,
+		'keys': keys,
+	};
+}
+
 Mpc.prototype.recv_msg = function(lines) {
-	curr = this._queue.shift();
+	var state, keys, ret;
+	var curr = this._queue.shift();
 	this.log(0x2, 'recv: [' + curr + ']:', lines.join('\n'));
 	if (lines[0].substr(0, 4) == 'ACK ')
 		this.err(curr, lines.join('\n'));
 	curr = curr.split(' ');
 
 	switch (curr[0]) {
-	// Needs to return a list of dicts (see above for dicts).
-	//case 'playlistinfo':
+	case 'playlistinfo':
+		var i = 2, playlist = [], song;
+		while (i < lines.length) {
+			if (lines[i].substr(0, 5) == 'file:') {
+				song = this._parse_result(lines.splice(0, i + 1)).state;
+				playlist = playlist.concat(song);
+				i = 0;
+			} else
+				++i;
+		}
+		this.state.Playlist = playlist;
+		this._cb_update_state(this.state);
+		break;
+
 	case 'currentsong':
+		this.state.Currentsong = this._parse_result(lines).state;
+		this._cb_update_state(this.state);
+		break;
+
 	case 'stats':
 	case 'status':
-		state = {};
-		keys = [];
-		lines.forEach(function(line) {
-			i = line.indexOf(':');
-			if (i == -1)
-				return;	// Ignores the OK line
-			key = line.substr(0, i);
-			keys.push(key);
-			val = line.substr(i + 2);
-			state[key] = val;
-		});
+		ret = this._parse_result(lines);
+		state = ret.state;
+		keys = ret.keys;
 
 		// When mpd is stopped, it gives us back crap values for some things.
 		if ('state' in state && state.state == 'stop') {
@@ -63,13 +93,14 @@ Mpc.prototype.recv_msg = function(lines) {
 		}
 		// Now merge the current state with the previous one so that we don't
 		// lose information like volume or song position.
-		curr_state = this.state;
+		var curr_state = this.state;
 		keys.forEach(function(key) {
 			curr_state[key] = state[key];
 		});
 
 		this._cb_update_state(curr_state);
 		break;
+
 	default:
 		this._cb_update_state(lines, curr);
 		break;
