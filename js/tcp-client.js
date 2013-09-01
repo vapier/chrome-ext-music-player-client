@@ -124,7 +124,7 @@ Author: Boris Smus (smus@chromium.org)
    */
   TcpClient.prototype._onConnectComplete = function(resultCode) {
     // Start polling for reads.
-    setInterval(this._periodicallyRead.bind(this), 500);
+    setInterval(this.poll.bind(this), 500);
 
     if (this.callbacks.connect) {
       log('connect complete');
@@ -138,7 +138,7 @@ Author: Boris Smus (smus@chromium.org)
    *
    * @see http://developer.chrome.com/apps/socket.html#method-read
    */
-  TcpClient.prototype._periodicallyRead = function() {
+  TcpClient.prototype.poll = function() {
     socket.read(this.socketId, null, this._onDataRead.bind(this));
   };
 

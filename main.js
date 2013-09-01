@@ -11,6 +11,9 @@ function TcpClientSender(tcpclient) {
 TcpClientSender.prototype.send = function(data, cb) {
 	this.tcpclient.sendMessage(data, cb);
 }
+TcpClientSender.prototype.poll = function() {
+	this.tcpclient.poll();
+}
 
 function tramp_mpc_recv(data) {
 	mpc.recv(data);
