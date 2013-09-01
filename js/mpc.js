@@ -8,9 +8,13 @@ function Mpc(socket, cb_update_state, debug_enabled) {
 	this.state = {};
 }
 
-Mpc.prototype.log = function(msg, obj) {
-	if (this._debug_enabled)
+Mpc.prototype.log = function(lvl, msg, obj) {
+	if (this._debug_enabled & lvl)
 		console.log('mpc: ' + msg, obj);
+}
+
+Mpc.prototype.err = function(msg, obj) {
+	console.error('mpc: ' + msg, obj);
 }
 
 Mpc.prototype.set_debug = function(val) {
@@ -21,13 +25,13 @@ Mpc.prototype.send = function(msg) {
 	var _this = this;
 	this._queue.push(msg);
 	this._socket.send(msg, function(x) {
-		_this.log('send: ' + msg + ':', x);
+		_this.log(0x1, 'send: ' + msg + ':', x);
 	});
 }
 
 Mpc.prototype.recv_msg = function(lines) {
 	curr = this._queue.shift();
-	this.log('recv: [' + curr + ']:', lines.join('\n'));
+	this.log(0x2, 'recv: [' + curr + ']:', lines.join('\n'));
 	curr = curr.split(' ');
 
 	switch (curr[0]) {
@@ -79,7 +83,7 @@ Mpc.__make_send_void = function(cmd) {
 Mpc.__make_send_arg1 = function(cmd) {
 	return function(a1) {
 		if (a1 === undefined)
-			this.log(cmd + ': function requires one argument');
+			this.err(cmd + ': function requires one argument');
 		else
 			this.send(cmd + ' ' + a1);
 	}
@@ -88,7 +92,7 @@ Mpc.__make_send_arg1 = function(cmd) {
 Mpc.__make_send_arg2 = function(cmd) {
 	return function(a1, a2) {
 		if (a1 === undefined || a2 === undefined)
-			this.log(cmd + ': function requires two arguments');
+			this.err(cmd + ': function requires two arguments');
 		else
 			this.send(cmd + ' ' + a1 + ' ' + a2);
 	}
@@ -109,7 +113,7 @@ Mpc.__make_send_range = function(cmd, min, max, def) {
 		if (arg >= min && arg <= max)
 			this.send(cmd + ' ' + arg);
 		else
-			this.log(cmd + ': arg must be [' + min + ',' + max + '] but got "' + arg + '"');
+			this.err(cmd + ': arg must be [' + min + ',' + max + '] but got "' + arg + '"');
 	};
 }
 
