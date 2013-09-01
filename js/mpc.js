@@ -28,6 +28,12 @@ Mpc.prototype.send = function(msg) {
 	this._queue.push(msg);
 	this._socket.send(msg, function(x) {
 		_this.log(0x1, 'send: ' + msg + ':', x);
+		if (x.bytesWritten < 0) {
+			_this.log(0x1, 'reconnecting...');
+			_this._socket.reconnect();
+			_this.queue = [msg];
+			_this._socket.send(msg);
+		}
 	});
 }
 

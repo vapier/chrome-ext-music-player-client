@@ -14,6 +14,10 @@ TcpClientSender.prototype.send = function(data, cb) {
 TcpClientSender.prototype.poll = function() {
 	this.tcpclient.poll();
 }
+TcpClientSender.prototype.reconnect = function() {
+	this.tcpclient.disconnect();
+	this.tcpclient.connect();
+}
 
 function tramp_mpc_recv(data) {
 	mpc.recv(data);
