@@ -193,7 +193,7 @@ function init_ui(local_keys, sync_keys, options) {
 		'seekcur', 'setvol', 'single', 'stop',
 	].forEach(function(id) {
 		var ele = window['ui_mpc_' + id] = document.getElementById(id);
-		ele.onclick = window['tramp_mpc_' + id];
+		ele.onchange = ele.onclick = window['tramp_mpc_' + id];
 		ele.title = id;
 	});
 
