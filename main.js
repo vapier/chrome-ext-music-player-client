@@ -356,20 +356,25 @@ function update_ui(state, cmd) {
 	});
 
 	/* Update the status tab. */
-	var time;
-	if ('time' in state)
+	var time, percent;
+	if ('time' in state) {
 		// When stopped, there is no time field at all.
 		time = state.time.split(':');
-	else
+		percent = Math.floor((0.0 + time[0]) * 100 / (0.0 + time[1]));
+	} else {
 		time = [0, 0];
+		percent = 0;
+	}
 	ui_mpc_seekcur.max = time[1];
 	ui_mpc_seekcur.value = time[0];
-	percent = Math.floor((0.0 + time[0]) * 100 / (0.0 + time[1]));
 	ui_mpc_seekcur.title = 'seekcur (' + percent + '%)';
 	ui_mpc_currtime.innerText = [pretty_time(time[0]), pretty_time(time[1]), percent + '%'].join(' / ');
 
-	ui_mpc_setvol.value = state.volume;
-	ui_mpc_setvol.title = 'setvol (' + state.volume + '%)';
+	ui_mpc_setvol.title = 'setvol';
+	if ('volume' in state) {
+		ui_mpc_setvol.value = state.volume;
+		ui_mpc_setvol.title += ' (' + state.volume + '%)';
+	}
 
 	[
 		'consume', 'random', 'repeat', 'single',
