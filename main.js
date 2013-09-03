@@ -309,51 +309,54 @@ function update_ui(state, cmd) {
 		return;
 	}
 
-	/* Update the metadata tab. */
-	var currentsong = {};
-	if ('Currentsong' in state)
-		currentsong = state.Currentsong;
-	ui_mpc_metadata_album.innerText = currentsong.Album;
-	ui_mpc_metadata_artist.innerText = currentsong.Artist;
-	ui_mpc_metadata_title.innerText = currentsong.Title;
-	ui_mpc_metadata_date.innerText = currentsong.Date;
-	ui_mpc_metadata_file.innerText = currentsong.file;
+	/* Update the metadata tab only when things have changed. */
+	if ('Currentsong' in state && ui_mpc_metadata_file.lastUpdate != state.Currentsong.lastUpdate) {
+		var currentsong = state.Currentsong;
+		ui_mpc_metadata_album.innerText = currentsong.Album;
+		ui_mpc_metadata_artist.innerText = currentsong.Artist;
+		ui_mpc_metadata_title.innerText = currentsong.Title;
+		ui_mpc_metadata_date.innerText = currentsong.Date;
+		ui_mpc_metadata_file.innerText = currentsong.file;
+	}
 
-	/* Update the playlist tab. */
-	var playlist = [];
-	if ('Playlist' in state)
-		playlist = state.Playlist;
-	ui_mpc_playlist.innerHTML = '';
-	playlist.forEach(function(song) {
-		var cell, row = ui_mpc_playlist.insertRow(-1);
-		if (song.Pos == currentsong.Pos)
-			row.style.fontWeight = 'bold';
+	/* Update the playlist tab only when things have changed. */
+	if ('Playlist' in state && ui_mpc_playlist.lastUpdate != state.Playlist.lastUpdate) {
+		var playlist = state.Playlist;
 
-		cell = row.insertCell(-1);
-		cell.id = 'playlist_del';
-		cell.innerHTML = '&#164;';
-		cell.song_id = song.Id;
-		cell.title = 'delete';
-		cell.onclick = playlist_del;
+		ui_mpc_playlist.innerHTML = '';
+		playlist.forEach(function(song) {
+			var cell, row = ui_mpc_playlist.insertRow(-1);
+			if (song.Pos == currentsong.Pos)
+				row.style.fontWeight = 'bold';
 
-		cell = row.insertCell(-1);
-		cell.innerText = song.Pos;
-		cell.style.textAlign = 'right';
-		cell.song_id = song.Id;
-		cell.title = 'play';
-		cell.onclick = playlist_play;
-
-		if ('Artist' in song) {
-			row.insertCell(-1).innerText = song.Artist;
-			row.insertCell(-1).innerText = song.Album;
-			row.insertCell(-1).innerText = song.Title;
-		} else {
 			cell = row.insertCell(-1);
-			cell.innerText = song.file;
-			cell.colSpan = 3;
-		}
-		row.insertCell(-1).innerText = pretty_time(song.Time);
-	});
+			cell.id = 'playlist_del';
+			cell.innerHTML = '&#164;';
+			cell.song_id = song.Id;
+			cell.title = 'delete';
+			cell.onclick = playlist_del;
+
+			cell = row.insertCell(-1);
+			cell.innerText = song.Pos;
+			cell.style.textAlign = 'right';
+			cell.song_id = song.Id;
+			cell.title = 'play';
+			cell.onclick = playlist_play;
+
+			if ('Artist' in song) {
+				row.insertCell(-1).innerText = song.Artist;
+				row.insertCell(-1).innerText = song.Album;
+				row.insertCell(-1).innerText = song.Title;
+			} else {
+				cell = row.insertCell(-1);
+				cell.innerText = song.file;
+				cell.colSpan = 3;
+			}
+			row.insertCell(-1).innerText = pretty_time(song.Time);
+		});
+
+		ui_mpc_playlist.lastUpdate = playlist.lastUpdate;
+	}
 
 	/* Update the status tab. */
 	var time, percent;

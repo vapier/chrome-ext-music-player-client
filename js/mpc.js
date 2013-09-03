@@ -78,11 +78,13 @@ Mpc.prototype.recv_msg = function(lines) {
 				++i;
 		}
 		this.state.Playlist = playlist;
+		this.state.Playlist.lastUpdate = (new Date()).getTime();
 		this._cb_update_state(this.state);
 		break;
 
 	case 'currentsong':
 		this.state.Currentsong = this._parse_result(lines).state;
+		this.state.Currentsong.lastUpdate = (new Date()).getTime();
 		this._cb_update_state(this.state);
 		break;
 
