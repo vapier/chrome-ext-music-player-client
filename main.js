@@ -310,13 +310,16 @@ function update_ui(state, cmd) {
 	}
 
 	/* Update the metadata tab only when things have changed. */
-	if ('Currentsong' in state && ui_mpc_metadata_file.lastUpdate != state.Currentsong.lastUpdate) {
-		var currentsong = state.Currentsong;
-		ui_mpc_metadata_album.innerText = currentsong.Album;
-		ui_mpc_metadata_artist.innerText = currentsong.Artist;
-		ui_mpc_metadata_title.innerText = currentsong.Title;
-		ui_mpc_metadata_date.innerText = currentsong.Date;
-		ui_mpc_metadata_file.innerText = currentsong.file;
+	var currentsong;
+	if ('Currentsong' in state) {
+		currentsong = state.Currentsong;
+		if (ui_mpc_metadata_file.lastUpdate != state.Currentsong.lastUpdate) {
+			ui_mpc_metadata_album.innerText = currentsong.Album;
+			ui_mpc_metadata_artist.innerText = currentsong.Artist;
+			ui_mpc_metadata_title.innerText = currentsong.Title;
+			ui_mpc_metadata_date.innerText = currentsong.Date;
+			ui_mpc_metadata_file.innerText = currentsong.file;
+		}
 	}
 
 	/* Update the playlist tab only when things have changed. */
@@ -326,7 +329,7 @@ function update_ui(state, cmd) {
 		ui_mpc_playlist.innerHTML = '';
 		playlist.forEach(function(song) {
 			var cell, row = ui_mpc_playlist.insertRow(-1);
-			if (song.Pos == currentsong.Pos)
+			if (currentsong && song.Pos == currentsong.Pos)
 				row.style.fontWeight = 'bold';
 
 			cell = row.insertCell(-1);
