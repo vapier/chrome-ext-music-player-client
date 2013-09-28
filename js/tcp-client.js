@@ -93,9 +93,11 @@ Author: Boris Smus (smus@chromium.org)
    */
   TcpClient.prototype.disconnect = function() {
     socket.disconnect(this.socketId);
-    clearInterval(this.pollerId);
-    this.pollerId = null;
-    this.isConnected = false;
+    if (this.isConnected) {
+      clearInterval(this.pollerId);
+      this.pollerId = null;
+      this.isConnected = false;
+    }
   };
 
   /**
@@ -111,7 +113,6 @@ Author: Boris Smus (smus@chromium.org)
     this.socketId = createInfo.socketId;
     if (this.socketId > 0) {
       socket.connect(this.socketId, this.host, this.port, this._onConnectComplete.bind(this));
-      this.isConnected = true;
     } else {
       error('Unable to create socket');
     }
@@ -126,13 +127,20 @@ Author: Boris Smus (smus@chromium.org)
    * @param {Number} resultCode Indicates whether the connection was successful
    */
   TcpClient.prototype._onConnectComplete = function(resultCode) {
+    log('resultCode: ' + resultCode);
+
+    // XXX: Can this ever be positive ?
+    this.isConnected = (resultCode >= 0);
+
     // Start polling for reads.
     clearInterval(this.pollerId);
-    this.pollerId = setInterval(this.poll.bind(this), 500);
+    if (this.isConnected) {
+      this.pollerId = setInterval(this.poll.bind(this), 500);
+    }
 
     if (this.callbacks.connect) {
       log('connect complete');
-      this.callbacks.connect();
+      this.callbacks.connect(resultCode);
     }
     log('onConnectComplete');
   };
@@ -218,14 +226,14 @@ Author: Boris Smus (smus@chromium.org)
    * Wrapper function for logging
    */
   function log(msg) {
-    //console.log('tcp-client: ', msg);
+    //console.log('tcp-client:', msg);
   }
 
   /**
    * Wrapper function for error logging
    */
   function error(msg) {
-    console.error('tcp-client: ', msg);
+    console.error('tcp-client:', msg);
   }
 
   exports.TcpClient = TcpClient;
