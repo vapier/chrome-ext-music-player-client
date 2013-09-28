@@ -42,6 +42,7 @@ Author: Boris Smus (smus@chromium.org)
     // Socket.
     this.socketId = null;
     this.isConnected = false;
+    this.pollerId = null;
 
     log('initialized tcp client');
   }
@@ -92,6 +93,8 @@ Author: Boris Smus (smus@chromium.org)
    */
   TcpClient.prototype.disconnect = function() {
     socket.disconnect(this.socketId);
+    clearInterval(this.pollerId);
+    this.pollerId = null;
     this.isConnected = false;
   };
 
@@ -124,7 +127,8 @@ Author: Boris Smus (smus@chromium.org)
    */
   TcpClient.prototype._onConnectComplete = function(resultCode) {
     // Start polling for reads.
-    setInterval(this.poll.bind(this), 500);
+    clearInterval(this.pollerId);
+    this.pollerId = setInterval(this.poll.bind(this), 500);
 
     if (this.callbacks.connect) {
       log('connect complete');
