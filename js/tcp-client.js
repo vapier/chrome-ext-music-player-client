@@ -110,6 +110,9 @@ Author: Boris Smus (smus@chromium.org)
    * @param {Object} createInfo The socket details
    */
   TcpClient.prototype._onCreate = function(createInfo) {
+    if (this.socketId !== null) {
+      socket.destroy(this.socketId);
+    }
     this.socketId = createInfo.socketId;
     if (this.socketId > 0) {
       socket.connect(this.socketId, this.host, this.port, this._onConnectComplete.bind(this));
