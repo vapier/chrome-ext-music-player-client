@@ -157,12 +157,15 @@ function show_page(page) {
 	if (typeof(page) != 'string')
 		page = this.id.split('.')[1];
 
+	// We might not be connected in which case 'mpc' will be undefined.
 	switch (page) {
 	case 'playlist':
-		mpc.playlistinfo();
+		if (mpc)
+			mpc.playlistinfo();
 		// Fallthrough.
 	case 'metadata':
-		mpc.currentsong();
+		if (mpc)
+			mpc.currentsong();
 		break;
 	}
 
