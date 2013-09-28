@@ -61,17 +61,23 @@ window.onload = function() {
 };
 
 window.onkeypress = function(e) {
+	if (e.target != document.body) {
+		/* Only allow the shortcuts when the focus is on the body.
+		   Otherwise you can't type these numbers into text fields. */
+		return;
+	}
+
 	switch (e.keyCode) {
 	case 49: // 1
 		show_page('controls');
 		break;
-	case 50: // 1
+	case 50: // 2
 		show_page('metadata');
 		break;
-	case 51: // 1
+	case 51: // 3
 		show_page('playlist');
 		break;
-	case 52: // 1
+	case 52: // 4
 		show_page('options');
 		break;
 	}
