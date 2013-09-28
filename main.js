@@ -103,7 +103,12 @@ function mpc_connect(host, port) {
 
 	update_ui('init');
 	tcpclient = new TcpClient(host, port);
-	tcpclient.connect(function() {
+	tcpclient.connect(function(resultCode) {
+		if (resultCode < 0) {
+			update_ui('error', resultCode);
+			return;
+		}
+
 		var mpc_sender = new TcpClientSender(tcpclient);
 		tcpclient.addResponseListener(tramp_mpc_recv);
 		mpc = new Mpc(mpc_sender, update_ui);
@@ -301,6 +306,7 @@ function update_ui(state, cmd) {
 		ui_mpc_status.innerText = ({
 			'disconnect': 'Disconnecting...',
 			'init': 'Connecting...',
+			'error': 'Connection error ' + cmd,
 		})[state];
 		return;
 	}
