@@ -182,10 +182,13 @@ input[type=range] {
 }
 .other {
   display: inline-block;
-  min-width: 109px;
-  width: 109px;
-  max-width: 109px;
+  min-width: 200px;
+  width: 200px;
+  max-width: 200px;
   text-align: left;
+}
+.other:nth-child(1) {
+  margin-top: -7px;
 }
 input[type=range]::-webkit-slider-runnable-track {
   width: 300px;
@@ -219,6 +222,14 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 #stop,
 #next {
   font-size: 1.3em;
+  width: 26px;
+  height: 26px;
+}
+#play,
+#pause {
+  width: 40px;
+  height: 40px;
+  margin-bottom: -7px;
 }
 
 #connect {
@@ -256,7 +267,19 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 
 <div id='body'>
   <div class="topbar">
-    <div class="other"><input type='button' id='previous' value='&#x21E6;' accesskey='a'><input type='button' id='play' value='&#x25B7;' accesskey='s'><input type='button' id='pause' value='&#x25EB;' accesskey='d'><input type='button' id='stop' value='&#x25FB;' accesskey='f'><input type='button' id='next' value='&#x21E8;' accesskey='g'></div><div class='durration'><div class='currtime' id='currtime1'></div><input type='range' id='seekcur' min='0' max='100' value='0'><div class='currtime' id='currtime2'></div></div><div class="other" style="text-align: right"><input type='button' id='repeat' value='&#x221E;'><input type='button' id='random' value='&reg;'><input type='button' id='single' value='&sect;'><input type='button' id='consume' value='&copy;'></div>
+    <div class="other">
+      <input type='image' id='previous' src="images/previous.png" value='&#x21E6;' accesskey='a'>
+      <input type='image' src='images/play.png'id='play' value='&#x25B7;' accesskey='s'>
+      <input type='image' src='images/pause.png' id='pause' value='&#x25EB;' accesskey='d'>
+      <input type='image' src='images/stop.png' id='stop' value='&#x25FB;' accesskey='f'>
+      <input type='image' src='images/next.png' id='next' value='&#x21E8;' accesskey='g'>
+    </div>
+    <div class='durration'>
+      <div class='currtime' id='currtime1'></div>
+      <input type='range' id='seekcur' min='0' max='100' value='0'>
+      <div class='currtime' id='currtime2'></div>
+    </div>
+    <div class="other" style="text-align: right"><input type='button' id='repeat' value='&#x221E;'><input type='button' id='random' value='&reg;'><input type='button' id='single' value='&sect;'><input type='button' id='consume' value='&copy;'></div>
   </div>
   
   <div class='content'>
