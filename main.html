@@ -9,149 +9,323 @@
 <script src='main.js'></script>
 <style>
 table {
-	margin: 0px;
-	padding: 0px;
-	border-collapse: collapse;
+  margin: 0px;
+  padding: 0px;
+  border-collapse: collapse;
 }
 body {
-	margin: 0px;
-	padding: 0px;
+  margin: 0px;
+  padding: 0px;
+  background-color: #ffffff;
 }
 td {
-	white-space: nowrap;
+  white-space: nowrap;
 }
 div#status {
-	white-space: nowrap;
+  white-space: nowrap;
 }
 
 table.tabs td {
-	padding-left: 1em;
-	border: black solid 1px;
-	border-top: 0px;
-	font-size: smaller;
-	font-family: sans-serif;
-	background-color: #d0d0d0;
+  padding-left: 1em;
+  border: black solid 1px;
+  border-top: 0px;
+  font-size: smaller;
+  font-family: sans-serif;
+  background-color: #d0d0d0;
 }
 table.tabs td.selected {
-	background-color: white;
+  background-color: white;
 }
 
 /* Playlist styles */
-table#playlist td {
-	border-left: black solid 1px;
-	padding-right: 0.5em;
+table#playlist {
+  display: block;
+}
+
+table#playlist tr td {
+  padding-right: 0.5em;
+}
+table#playlist tr td:nth-child(3),
+table#playlist tr td:nth-child(4),
+table#playlist tr td:nth-child(5) {
+  /*border-left: black solid 1px;*/
+  width: 100%;
+}
+
+table#playlist tr:nth-child(even) {
+  background-color: #f5f5f5;
 }
 
 td#playlist_del {
-	padding-left: 0.3em;
-	padding-right: 0.2em;
-	font-weight: bold;
+  padding-left: 0.3em;
+  padding-right: 0.2em;
+  font-weight: bold;
 }
 
 /* Get the tabs to float at the bottom */
 html, body {
-	height: 100%;
+  height: 100%;
 }
 div#body {
-	min-height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 div.main {
-	overflow: auto;
-	padding-bottom: 1.3em;
+  width: 100%;
+  flex: 1;
+  position: relative;
 }
 div#footer {
-	position: relative;
-	margin-top: -1.3em;
-	height: 1.3em;
-	clear: both;
+  width: 100%;
+  height: 16px;
+  min-height: 16px;
+  max-height: 16px;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dedede), color-stop(100%,#c0c0c0));
+  border-top: #999999 solid 1px;
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
 }
-table#playlist {
-	height: 85px;
-	display: block;
-};
+.topbar {
+  height: 26px;
+  min-height: 26px;
+  max-height: 26px;
+  padding: 10px;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dedede), color-stop(100%,#c0c0c0));
+  border-bottom: 1px solid #999999;
+  box-shadow: 0px 0px 5px #999999;
+  flex-direction: row;
+  display: flex;
+}
+input {
+  background-color: transparent;
+}
+input[type=button] {
+  border: none;
+  outline: none;
+  font-size: 1.2em;
+  margin: 0px;
+  width: 26px;
+  height: 26px;
+}
+#repeat,
+#random,
+#single,
+#consume {
+  border: none;
+  outline: none;
+  font-size: 1.2em;
+  margin: 0px;
+  min-width: 26px;
+  width: 26px;
+  max-width: 26px;
+  height: 26px;
+  border: #999999 solid 1px;
+  margin-right: -1px;
+}
+#repeat {
+  border-radius: 3px 0px 0px 3px;
+}
+#consume {
+  border-radius: 0px 3px 3px 0px;
+}
+.off {
+  background-color: transparent;
+}
+.on {
+  box-shadow: inset 0px 0px 10px #bababa;
+  background-color: #c0c0c0;
+}
+.content {
+  height: 100%;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}
+.tableholder {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  position: absolute;
+}
+.options {
+  width: 200px;
+  max-width: 200px;
+  min-width: 200px;
+  background-color: #f5f5f5;
+}
+input[type=range] {
+  -webkit-appearance: none;
+}
+.durration {
+  width: 100%;
+  text-align: center;
+  flex-direction: row;
+  display: flex;
+  justify-content: space-around;
+}
+#seekcur {
+  background-color: transparent;
+  width: 100%;
+  margin-top: 3px;
+}
+.currtime {
+  margin-top: 7px;
+  padding: 0px 5px;
+}
+.other {
+  display: inline-block;
+  min-width: 109px;
+  width: 109px;
+  max-width: 109px;
+  text-align: left;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 300px;
+  height: 4px;
+  background-color: #c8c8c8;
+  border: none;
+  vertical-align: middle;
+  border: #888888 solid 1px;
+  border-radius: 2px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#e5e5e5), color-stop(100%,#d0d0d0));;
+  border: #888888 solid 1px;
+  margin-top: -7px;
+}
+input[type=range]:focus {
+  outline: none;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+  /*background: #ccc;*/
+}
+#previous,
+#play,
+#pause,
+#stop,
+#next {
+  font-size: 1.3em;
+}
+
+#connect {
+  width: auto;
+  border: #c0c0c0 1px solid;
+  border-radius: 3px;
+  background-color: #dedede;
+}
+#connect:hover {
+  background-color: #e5e5e5;
+}
+.hiding {
+  display: none;
+}
+.showing {
+  display: inline-block;
+}
+
+.bold {
+  background-color: #3d9bda !important;
+  color: #ffffff;
+}
+
+.show_options {
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.show_options:hover {
+  box-shadow: inset 0px 0px 3px #bababa;
+  background-color: #c0c0c0;
+}
 </style>
 </head>
 
 <body>
 
 <div id='body'>
+  <div class="topbar">
+    <div class="other"><input type='button' id='previous' value='&#x21E6;' accesskey='a'><input type='button' id='play' value='&#x25B7;' accesskey='s'><input type='button' id='pause' value='&#x25EB;' accesskey='d'><input type='button' id='stop' value='&#x25FB;' accesskey='f'><input type='button' id='next' value='&#x21E8;' accesskey='g'></div><div class='durration'><div class='currtime' id='currtime1'></div><input type='range' id='seekcur' min='0' max='100' value='0'><div class='currtime' id='currtime2'></div></div><div class="other" style="text-align: right"><input type='button' id='repeat' value='&#x221E;'><input type='button' id='random' value='&reg;'><input type='button' id='single' value='&sect;'><input type='button' id='consume' value='&copy;'></div>
+  </div>
+  
+  <div class='content'>
+    <div class='main' id='main.controls'>
+      <div class='tableholder'>
+        <table id='playlist'></table>
+      </div>
+    </div>
+    <div class="options">
+      <table>
+        <tr>
+          <td>Host:</td>
+          <td><input type='text' id='host'></td>
+        </tr>
+        <tr>
+          <td>Port:</td>
+          <td colspan=2>
+            <input type='number' id='port' style='width:60px'>
+          </td>
+        </tr>
+        <tr>
+          <td colspan=2>
+            <input type='button' id='connect' value='connect'>
+          </td>
+        </tr>
+        <tr>
+          <td>Refresh (sec):</td>
+          <td>
+            <input type='number' id='refresh' style='width:40px'>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Sync Settings:
+          </td>
+          <td>
+            <input type='checkbox' id='sync' checked>
+          </td>
+        </tr>
+      </table>
+    </div>
+  
+    <!--<div class='main' id='main.options' style='display: none'>-->
+    <!--</div>-->
+  
+    <!--<div class='main' id='main.metadata' style='display: none'>-->
+    <!--  <span id='metadata.artist'></span> --->
+    <!--  <span id='metadata.album'></span> --->
+    <!--  <span id='metadata.title'></span><br>-->
+    <!--  <span id='metadata.date'></span><br><br>-->
+    <!--  <span id='metadata.file'></span>-->
+    <!--</div>-->
+  </div>
+  
+  <div id='footer'>
 
-<div class='main' id='main.controls'>
-<table>
- <tr style='whitespace:collapse'>
-  <td>
-   <input type='button' id='previous' value='&#x21E6;' accesskey='a'><input type='button' id='play' value='&#x25B7;' accesskey='s'><input type='button' id='pause' value='&#x25EB;' accesskey='d'><input type='button' id='stop' value='&#x25FB;' accesskey='f'><input type='button' id='next' value='&#x21E8;' accesskey='g'>
-  </td>
-  <td>
-   <input type='button' id='repeat' value='&#x221E;'><input type='button' id='random' value='&reg;'><input type='button' id='single' value='&sect;'><input type='button' id='consume' value='&copy;'>
-  </td>
- </tr>
- <tr>
-  <td>
-   <input type='range' id='setvol' min='0' max='100' value='0'>
-  </td>
-  <td>
-   <input type='range' id='seekcur' min='0' max='100' value='0'>
-  </td>
- </tr>
- <tr>
-  <td id='status'>
-   Loading...
-  </td>
-  <td id='currtime'></td>
- </tr>
-</table>
+    <input type='range' id='setvol' min='0' max='100' value='0'>
+    <div class="show_options">s</div>
+    <table class='tabs' style="display: none;">
+      <tr>
+        <td id='tab.controls' class='selected'>Controls</td>
+        <!--<td id='tab.metadata'>Metadata</td>-->
+        <!--<td id='tab.options'>Options</td>-->
+      </tr>
+    </table>
+  </div>
 </div>
 
-<div class='main' id='main.options' style='display: none'>
-<table>
- <tr>
-  <td>Host:</td>
-  <td><input type='text' id='host'></td>
- </tr>
- <tr>
-  <td>Port:</td>
-  <td colspan=2>
-   <input type='number' id='port' style='width:60px'>
-   &nbsp;&nbsp;&nbsp;
-   <input type='button' id='connect' value='connect'>
-  </td>
- </tr>
- <tr>
-  <td>Refresh (sec):</td>
-  <td>
-   <input type='number' id='refresh' style='width:40px'>
-   &nbsp;&nbsp;&nbsp;
-   Sync Settings:<input type='checkbox' id='sync' checked>
-  </td>
- </tr>
-</table>
+<div style="display: none;" id='status'>
+  Loading...
 </div>
-
-<div class='main' id='main.metadata' style='display: none'>
-<span id='metadata.artist'></span> -
-<span id='metadata.album'></span> -
-<span id='metadata.title'></span><br>
-<span id='metadata.date'></span><br><br>
-<span id='metadata.file'></span>
-</div>
-
-<div class='main' id='main.playlist' style='display: none'>
-<table id='playlist'></table>
-</div>
-
-</div>
-
-<div id='footer'>
-<table class='tabs'>
- <tr>
-  <td id='tab.controls' class='selected'>Controls</td>
-  <td id='tab.metadata'>Metadata</td>
-  <td id='tab.playlist'>Playlist</td>
-  <td id='tab.options'>Options</td>
- </tr>
-</table>
-</div>
-
+<script src="startup.js"></script>
 </body>
 </html>
