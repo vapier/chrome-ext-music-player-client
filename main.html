@@ -149,14 +149,17 @@ input[type=button] {
 .tableholder {
   width: 100%;
   height: 100%;
+  -webkit-transition: width .3s;
+  -webkit-transition: scroll-top .3s;
   overflow: auto;
   position: absolute;
 }
 .options {
-  width: 200px;
-  max-width: 200px;
-  min-width: 200px;
+  width: 235px;
+  max-width: 235px;
+  min-width: 235px;
   background-color: #f5f5f5;
+  -webkit-transition: display .3s;
 }
 input[type=range] {
   -webkit-appearance: none;
@@ -222,7 +225,6 @@ input[type=range]:focus::-webkit-slider-runnable-track {
   width: auto;
   border: #c0c0c0 1px solid;
   border-radius: 3px;
-  background-color: #dedede;
 }
 #connect:hover {
   background-color: #e5e5e5;
@@ -266,6 +268,12 @@ input[type=range]:focus::-webkit-slider-runnable-track {
     <div class="options">
       <table>
         <tr>
+          <td colspan=2 style="text-align: center; font-size: 2em;"><strong>Settings</strong></td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
           <td>Host:</td>
           <td><input type='text' id='host'></td>
         </tr>
@@ -276,7 +284,7 @@ input[type=range]:focus::-webkit-slider-runnable-track {
           </td>
         </tr>
         <tr>
-          <td colspan=2>
+          <td colspan=2 style="text-align: center;">
             <input type='button' id='connect' value='connect'>
           </td>
         </tr>

@@ -286,7 +286,7 @@ function playlist_del() {
 }
 
 function playlist_play() {
-  mpc.playid(this.song_id);
+  mpc.playid(this.parentNode.childNodes[1].song_id);
   mpc.currentsong(); 
   hide_on_status_change ('play');
   for (var i = 0; i < this.parentNode.parentNode.childNodes.length; ++i) {
@@ -335,7 +335,8 @@ function update_ui(state, cmd) {
               ui_mpc_playlist.childNodes[0].childNodes[j].className = '';
             }
             ui_mpc_playlist.childNodes[0].childNodes[i].className = "bold";
-            ui_mpc_playlist.parentNode.scrollTop = ui_mpc_playlist.childNodes[0].childNodes[i].offsetTop - 0.5 * ui_mpc_playlist.parentNode.clientHeight;
+            // ui_mpc_playlist.parentNode.scrollTop = ui_mpc_playlist.childNodes[0].childNodes[i].offsetTop - 0.5 * ui_mpc_playlist.parentNode.clientHeight;
+            scrollToTop(ui_mpc_playlist.parentNode, ui_mpc_playlist.childNodes[0].childNodes[i].offsetTop - 0.5 * ui_mpc_playlist.parentNode.clientHeight, 300)
           }
         }
         document.title = currentsong.Title + " by " + currentsong.Artist + " on " + currentsong.Album;
@@ -369,15 +370,24 @@ function update_ui(state, cmd) {
     cell.onclick = playlist_play;
 
     if ('Artist' in song) {
-      row.insertCell(-1).innerText = song.Title;
-      row.insertCell(-1).innerText = song.Artist;
-      row.insertCell(-1).innerText = song.Album;
+      cell = row.insertCell(-1);
+      cell.innerText = song.Title;
+      cell.onclick = playlist_play;
+      cell = row.insertCell(-1);
+      cell.innerText = song.Artist;
+      cell.onclick = playlist_play;
+      cell = row.insertCell(-1);
+      cell.innerText = song.Album;
+      cell.onclick = playlist_play;
     } else {
       cell = row.insertCell(-1);
+      cell.onclick = playlist_play;
       cell.innerText = song.file;
       cell.colSpan = 3;
     }
-    row.insertCell(-1).innerText = pretty_time(song.Time);
+    cell = row.insertCell(-1);
+    cell.innerText = pretty_time(song.Time);
+    cell.onclick = playlist_play;
     });
 
     ui_mpc_playlist.lastUpdate = playlist.lastUpdate;
@@ -437,4 +447,15 @@ function hide_on_status_change (action) {
     stop1.className = "hiding";
     pause1.className = "showing";
     }
+}
+
+function scrollToTop(element, to, duration) {
+    if (duration <=    0) return;
+    var difference = to - element.scrollTop;
+    var perTick = difference / duration * 10;
+
+    setTimeout(function () {
+        element.scrollTop = element.scrollTop + perTick;
+        scrollToTop(element, to, duration - 10);
+    }, 10);
 }
